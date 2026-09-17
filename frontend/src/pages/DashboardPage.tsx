@@ -1,21 +1,18 @@
-import { Link } from "react-router-dom";
 import { useAuth } from "../auth-context";
+import { Nav } from "../components/Nav";
 
 export default function DashboardPage() {
-  const { user, profile, signOut } = useAuth();
+  const { profile } = useAuth();
 
   return (
-    <div style={{ maxWidth: 640, margin: "60px auto", fontFamily: "system-ui" }}>
-      <h1>Meridian</h1>
-      <p>Signed in as {user?.email}</p>
-      <p>
-        Role: <strong>{profile?.role ?? "loading..."}</strong>
-      </p>
-      <nav style={{ display: "flex", gap: 16, margin: "20px 0" }}>
-        <Link to="/submit">Submit an expense</Link>
-        {profile?.role === "manager" && <Link to="/queue">Approval queue</Link>}
-      </nav>
-      <button onClick={signOut}>Sign out</button>
+    <div>
+      <Nav />
+      <div className="mer-page">
+        <h1>Welcome back{profile?.full_name ? `, ${profile.full_name}` : ""}</h1>
+        <p className="mer-muted">
+          You&apos;re signed in as a{profile?.role === "manager" ? "n" : ""} <strong>{profile?.role ?? "..."}</strong>.
+        </p>
+      </div>
     </div>
   );
 }

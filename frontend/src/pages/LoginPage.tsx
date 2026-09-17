@@ -35,46 +35,54 @@ export default function LoginPage() {
   }
 
   return (
-    <div style={{ maxWidth: 360, margin: "80px auto", fontFamily: "system-ui" }}>
-      <h1>Meridian</h1>
-      <p>{mode === "signin" ? "Sign in" : "Create an account"}</p>
-      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-        {mode === "signup" && (
+    <div className="mer-login">
+      <div className="mer-login-sphere" />
+      <div className="mer-login-content">
+        <div className="mer-login-eyebrow">Provisioning &middot; Finance Network</div>
+        <h1 className="mer-login-wordmark">MERIDIAN</h1>
+
+        <form onSubmit={handleSubmit} className="mer-login-form">
+          {mode === "signup" && (
+            <input
+              type="text"
+              placeholder="Full name"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              required
+            />
+          )}
           <input
-            type="text"
-            placeholder="Full name"
-            value={fullName}
-            onChange={(e) => setFullName(e.target.value)}
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
           />
-        )}
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          minLength={6}
-        />
-        {error && <p style={{ color: "crimson" }}>{error}</p>}
-        <button type="submit" disabled={submitting}>
-          {submitting ? "Please wait..." : mode === "signin" ? "Sign in" : "Sign up"}
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            minLength={6}
+          />
+          {error && <p className="mer-error">{error}</p>}
+          <button type="submit" className="mer-btn-primary" disabled={submitting}>
+            {submitting ? "Please wait..." : mode === "signin" ? "Enter Terminal" : "Create Access"}
+          </button>
+        </form>
+
+        <button
+          type="button"
+          className="mer-link-btn"
+          style={{ marginTop: 18 }}
+          onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
+        >
+          {mode === "signin" ? "Need an account? Sign up" : "Already have an account? Sign in"}
         </button>
-      </form>
-      <button
-        type="button"
-        onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
-        style={{ marginTop: 16, background: "none", border: "none", color: "#2563eb", cursor: "pointer" }}
-      >
-        {mode === "signin" ? "Need an account? Sign up" : "Already have an account? Sign in"}
-      </button>
+
+        <div className="mer-login-footer">Secure Access &middot; Vierpolders HQ</div>
+      </div>
     </div>
   );
 }

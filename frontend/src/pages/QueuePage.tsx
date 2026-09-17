@@ -1,8 +1,12 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { supabase } from "../supabaseClient";
 import { useAuth } from "../auth-context";
+import { Nav } from "../components/Nav";
 import type { Expense } from "../types";
+
+function statusClass(status: Expense["status"]) {
+  return `mer-status-${status}`;
+}
 
 export default function QueuePage() {
   const { user } = useAuth();
@@ -53,64 +57,85 @@ export default function QueuePage() {
   }
 
   return (
-    <div style={{ maxWidth: 960, margin: "60px auto", fontFamily: "system-ui" }}>
-      <p>
-        <Link to="/">&larr; Dashboard</Link>
-      </p>
-      <h1>Approval queue</h1>
-      {loading ? (
-        <p>Loading...</p>
-      ) : expenses.length === 0 ? (
-        <p>Nothing submitted yet.</p>
-      ) : (
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
-          <thead>
-            <tr style={{ textAlign: "left", borderBottom: "1px solid #ccc" }}>
-              <th>Description</th>
-              <th>Category</th>
-              <th>Port</th>
-              <th>Needed</th>
-              <th>Amount</th>
-              <th>Status</th>
-              <th>Receipt</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {expenses.map((expense) => (
-              <tr key={expense.id} style={{ borderBottom: "1px solid #eee" }}>
-                <td>{expense.description}</td>
-                <td>{expense.category}</td>
-                <td>{expense.port ?? "-"}</td>
-                <td>{expense.date_needed ?? "-"}</td>
-                <td>&euro;{(expense.amount_cents / 100).toFixed(2)}</td>
-                <td>{expense.status}</td>
-                <td>
-                  {expense.receipt_path ? (
-                    <button type="button" onClick={() => viewReceipt(expense.receipt_path!)}>
-                      View
-                    </button>
-                  ) : (
-                    "-"
-                  )}
-                </td>
-                <td>
-                  {expense.status === "pending" && (
-                    <span style={{ display: "flex", gap: 8 }}>
-                      <button disabled={actingOn === expense.id} onClick={() => decide(expense.id, "approved")}>
-                        Approve
-                      </button>
-                      <button disabled={actingOn === expense.id} onClick={() => decide(expense.id, "rejected")}>
-                        Reject
-                      </button>
-                    </span>
-                  )}
-                </td>
+    <div>
+      <Nav />
+      <div className="mer-page">
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 20 }}>
+          <h1 style={{ fontSize: 22 }}>Approval Queue</h1>
+          <span className="mer-muted" style={{ fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase" }}>
+            {expenses.filter((e) => e.status === "pending").length} Open
+          </span>
+        </div>
+        {loading ? (
+          <p className="mer-muted">Loading...</p>
+        ) : expenses.length === 0 ? (
+          <p className="mer-muted">Nothing submitted yet.</p>
+        ) : (
+          <table className="mer-table">
+            <thead>
+              <tr>
+                <th>Description</th>
+                <th>Category</th>
+                <th>Port</th>
+                <th>Needed</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Receipt</th>
+                <th></th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+            </thead>
+            <tbody>
+              {expenses.map((expense) => (
+                <tr key={expense.id}>
+                  <td>{expense.description}</td>
+                  <td>{expense.category}</td>
+                  <td>{expense.port ?? "-"}</td>
+                  <td>{expense.date_needed ?? "-"}</td>
+                  <td>&euro;{(expense.amount_cents / 100).toFixed(2)}</td>
+                  <td className={statusClass(expense.status)}>{expense.status}</td>
+                  <td>
+                    {expense.receipt_path ? (
+                      <button
+                        type="button"
+                        className="mer-link-btn"
+                        onClick={() => viewReceipt(expense.receipt_path!)}
+                      >
+                        View
+                      </button>
+                    ) : (
+                      "-"
+                    )}
+                  </td>
+                  <td>
+                    {expense.status === "pending" && (
+                      <span style={{ display: "flex", gap: 8 }}>
+                        <button
+                          type="button"
+                          className="mer-btn-primary"
+                          style={{ padding: "6px 14px" }}
+                          disabled={actingOn === expense.id}
+                          onClick={() => decide(expense.id, "approved")}
+                        >
+                          Approve
+                        </button>
+                        <button
+                          type="button"
+                          className="mer-btn-secondary"
+                          style={{ padding: "6px 14px" }}
+                          disabled={actingOn === expense.id}
+                          onClick={() => decide(expense.id, "rejected")}
+                        >
+                          Reject
+                        </button>
+                      </span>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
     </div>
   );
 }
