@@ -2,7 +2,7 @@
 
 A finance-manager employee portal, built as a multi-day practice project. Employees submit expenses, managers approve or reject them, and the whole thing is meant to look genuinely good, not just function.
 
-Never intended to go live or hold real financial data — see `CLAUDE.md` for the working rules this project (and any AI assistant working on it) follows.
+Never intended to go live or hold real financial data
 
 ## Stack
 
