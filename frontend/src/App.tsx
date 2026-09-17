@@ -1,8 +1,27 @@
+import { Routes, Route } from "react-router-dom";
+import { RequireAuth } from "./components/RequireAuth";
+import { RequireRole } from "./components/RequireRole";
+import LoginPage from "./pages/LoginPage";
+import DashboardPage from "./pages/DashboardPage";
+import SubmitPage from "./pages/SubmitPage";
+import QueuePage from "./pages/QueuePage";
+
 export default function App() {
   return (
-    <div style={{ fontFamily: "system-ui", padding: 40 }}>
-      <h1>Ledger</h1>
-      <p>Scaffold is up. Design and screens come next.</p>
-    </div>
+    <Routes>
+      <Route path="/login" element={<LoginPage />} />
+      <Route element={<RequireAuth />}>
+        <Route path="/" element={<DashboardPage />} />
+        <Route path="/submit" element={<SubmitPage />} />
+        <Route
+          path="/queue"
+          element={
+            <RequireRole role="manager">
+              <QueuePage />
+            </RequireRole>
+          }
+        />
+      </Route>
+    </Routes>
   );
 }
