@@ -1,0 +1,22 @@
+# dependencies
+node_modules/
+
+# build output
+dist/
+build/
+
+# env files - never commit real secrets
+.env
+.env.local
+
+# supabase local runtime state (kept for reference even though this project is cloud-first)
+supabase/.branches/
+supabase/.temp/
+
+# editor / OS
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+
+# Claude project guardrails, kept local, not part of the repo
+CLAUDE.md
