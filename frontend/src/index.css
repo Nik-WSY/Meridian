@@ -1,15 +1,16 @@
 :root {
-  --bg: #0e0c0a;
-  --surface: #17140f;
-  --border: #211d16;
-  --border-strong: #2b2620;
-  --border-input: #3a3527;
-  --text: #f3ede2;
-  --text-muted: #a49c8c;
-  --text-faint: #6b6455;
-  --accent: #c98a3e;
-  --success: #7a9169;
-  --danger: #a3695a;
+  --bg: #04070d;
+  --surface: #0f1826;
+  --border: #1b2733;
+  --border-strong: #29394a;
+  --border-input: #35485b;
+  --text: #eef2f7;
+  --text-muted: #7c8896;
+  --text-faint: #5c6b7a;
+  --accent: #ff3b3b;
+  --accent-ink: #080b10;
+  --success: #33d1c9;
+  --danger: #ff7a45;
   --font-display: 'Archivo Black', sans-serif;
   --font-body: 'Archivo', sans-serif;
   --radius: 3px;
@@ -23,9 +24,11 @@
 body {
   margin: 0;
   background: var(--bg);
+  background-image: radial-gradient(ellipse 1200px 600px at 50% -10%, rgba(255, 59, 59, 0.07), transparent 60%);
+  background-repeat: no-repeat;
   color: var(--text);
   font-family: var(--font-body);
-  font-size: 14px;
+  font-size: 15px;
 }
 
 h1, h2, h3 {
@@ -60,11 +63,13 @@ input, select, textarea {
   font-size: 13px;
   padding: 11px 13px;
   width: 100%;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 input:focus, select:focus, textarea:focus {
   outline: none;
   border-color: var(--border-input);
+  box-shadow: 0 0 0 3px rgba(255, 59, 59, 0.12);
 }
 
 input::placeholder, textarea::placeholder {
@@ -81,20 +86,29 @@ button {
   background: var(--accent);
   border: none;
   border-radius: var(--radius);
-  color: #16130f;
+  color: var(--accent-ink);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  transition: transform 0.15s ease, filter 0.15s ease, box-shadow 0.15s ease;
 }
 
 .mer-btn-primary:hover {
   filter: brightness(1.1);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(255, 59, 59, 0.25);
+}
+
+.mer-btn-primary:active {
+  transform: translateY(0);
 }
 
 .mer-btn-primary:disabled {
   opacity: 0.6;
   cursor: default;
+  transform: none;
+  box-shadow: none;
 }
 
 .mer-btn-secondary {
@@ -106,11 +120,13 @@ button {
   font-size: 11px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+  transition: border-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
 }
 
 .mer-btn-secondary:hover {
   border-color: var(--text);
   color: var(--text);
+  transform: translateY(-1px);
 }
 
 .mer-link-btn {
@@ -139,6 +155,7 @@ button {
   padding: 0 40px;
   height: 66px;
   border-bottom: 1px solid var(--border);
+  animation: mer-enter-fade 0.5s ease-out both;
 }
 
 .mer-nav-left {
@@ -165,6 +182,31 @@ button {
   text-transform: uppercase;
 }
 
+.mer-nav-links a {
+  position: relative;
+  padding-bottom: 4px;
+  transition: color 0.15s ease;
+}
+
+.mer-nav-links a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.25s ease;
+}
+
+.mer-nav-links a:hover::after,
+.mer-nav-links a.mer-nav-active::after {
+  transform: scaleX(1);
+}
+
 .mer-nav-active {
   color: var(--text) !important;
 }
@@ -177,6 +219,26 @@ button {
   letter-spacing: 0.08em;
   color: var(--text-faint);
   text-transform: uppercase;
+}
+
+.mer-nav-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mer-nav-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--success);
+  animation: mer-status-pulse 2.2s ease-out infinite;
+}
+
+@keyframes mer-status-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(51, 209, 201, 0.55); }
+  70% { box-shadow: 0 0 0 6px rgba(51, 209, 201, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(51, 209, 201, 0); }
 }
 
 .mer-avatar {
@@ -199,11 +261,56 @@ button {
   padding: 40px;
 }
 
+@media (min-width: 1440px) {
+  .mer-page {
+    max-width: 1320px;
+    padding: 48px 40px;
+  }
+}
+
+@media (min-width: 1800px) {
+  .mer-page {
+    max-width: 1480px;
+  }
+}
+
+/* Shared authenticated-page header (Submit, Queue) */
+.mer-page-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  animation: mer-enter-fade-up 0.45s ease-out both;
+}
+
+.mer-page-title {
+  font-size: 24px;
+}
+
+.mer-page-count {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.mer-page-back {
+  display: inline-block;
+  margin-bottom: 14px;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  animation: mer-enter-fade 0.4s ease-out both;
+}
+
+.mer-page-panel-enter {
+  animation: mer-enter-fade-up 0.5s ease-out 0.08s both;
+}
+
 /* Tables */
 .mer-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .mer-table th {
@@ -222,9 +329,72 @@ button {
   border-bottom: 1px solid var(--border);
 }
 
+.mer-table tbody tr {
+  animation: mer-enter-fade-up 0.4s ease-out both;
+  transition: background-color 0.15s ease;
+}
+
+.mer-table tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.mer-table tbody tr:nth-child(1) { animation-delay: 0s; }
+.mer-table tbody tr:nth-child(2) { animation-delay: 0.04s; }
+.mer-table tbody tr:nth-child(3) { animation-delay: 0.08s; }
+.mer-table tbody tr:nth-child(4) { animation-delay: 0.12s; }
+.mer-table tbody tr:nth-child(5) { animation-delay: 0.16s; }
+.mer-table tbody tr:nth-child(6) { animation-delay: 0.2s; }
+.mer-table tbody tr:nth-child(7) { animation-delay: 0.24s; }
+.mer-table tbody tr:nth-child(8) { animation-delay: 0.28s; }
+.mer-table tbody tr:nth-child(n+9) { animation-delay: 0.3s; }
+
 .mer-status-pending { color: var(--accent); }
 .mer-status-approved { color: var(--success); }
 .mer-status-rejected { color: var(--danger); }
+
+.mer-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.mer-status-pill::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+.mer-status-pill.mer-status-pending {
+  background: rgba(255, 59, 59, 0.12);
+}
+
+.mer-status-pill.mer-status-pending::before {
+  animation: mer-status-pulse-accent 1.8s ease-out infinite;
+}
+
+.mer-status-pill.mer-status-approved {
+  background: rgba(51, 209, 201, 0.12);
+}
+
+.mer-status-pill.mer-status-rejected {
+  background: rgba(255, 122, 69, 0.12);
+}
+
+@keyframes mer-status-pulse-accent {
+  0% { box-shadow: 0 0 0 0 rgba(255, 59, 59, 0.55); }
+  70% { box-shadow: 0 0 0 5px rgba(255, 59, 59, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 59, 59, 0); }
+}
 
 .mer-error {
   color: var(--danger);
@@ -232,66 +402,782 @@ button {
   margin: 0;
 }
 
-/* Login hero */
-.mer-login {
+/* Dashboard (hub: stat row + global map panel + activity/queue panel) */
+.mer-dash-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  padding-bottom: 28px;
+  margin-bottom: 28px;
+  border-bottom: 1px solid var(--border);
+  animation: mer-enter-fade-up 0.5s ease-out both;
+}
+
+.mer-stat {
+  position: relative;
+  padding-top: 14px;
+  transition: transform 0.2s ease;
+}
+
+.mer-stat::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 22px;
+  height: 2px;
+  background: var(--accent);
+  opacity: 0.7;
+}
+
+.mer-stat:hover {
+  transform: translateY(-2px);
+}
+
+.mer-stat-value {
+  font-family: var(--font-display);
+  font-size: 34px;
+  color: var(--text);
+  margin-bottom: 6px;
+  line-height: 1;
+}
+
+.mer-stat-label {
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.mer-dash-main {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.mer-dash-panel {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  animation: mer-enter-fade-up 0.55s ease-out 0.1s both;
+  transition: border-color 0.2s ease;
+}
+
+.mer-dash-panel:hover {
+  border-color: var(--border-strong);
+}
+
+.mer-dash-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.mer-dash-map-panel {
+  overflow: hidden;
+}
+
+.mer-dash-map-svg {
+  width: 100%;
+  height: 340px;
+  display: block;
+  background: var(--bg);
+}
+
+@media (min-width: 1440px) {
+  .mer-dash-map-svg {
+    height: 400px;
+  }
+}
+
+.mer-dash-continent {
+  fill: #131f2d;
+  stroke: var(--border-strong);
+  stroke-width: 1;
+}
+
+.mer-dash-hq-dot {
+  fill: var(--text);
+}
+
+.mer-dash-node-dot {
+  fill: var(--accent);
+}
+
+.mer-dash-node-ring {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1;
+  opacity: 0.5;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: mer-node-pulse 3.4s ease-out infinite;
+}
+
+.mer-dash-route {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1;
+  stroke-dasharray: 3 4;
+  opacity: 0.6;
+  animation: mer-route-flow 3s linear infinite;
+}
+
+.mer-dash-packet {
+  fill: #ff6a5a;
+  filter: drop-shadow(0 0 4px rgba(255, 59, 59, 0.9));
+}
+
+.mer-dash-map-label {
+  font-size: 8px;
+  letter-spacing: 0.05em;
+  fill: var(--text-faint);
+  text-transform: uppercase;
+}
+
+.mer-dash-map-label-hq {
+  fill: var(--text);
+}
+
+.mer-dash-list-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.mer-dash-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+  border-left: 2px solid transparent;
+  transition: background-color 0.2s ease;
+  animation: mer-enter-fade-up 0.4s ease-out both;
+}
+
+.mer-dash-item:hover {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.mer-dash-item:nth-child(1) { animation-delay: 0s; }
+.mer-dash-item:nth-child(2) { animation-delay: 0.05s; }
+.mer-dash-item:nth-child(3) { animation-delay: 0.1s; }
+.mer-dash-item:nth-child(4) { animation-delay: 0.15s; }
+.mer-dash-item:nth-child(5) { animation-delay: 0.2s; }
+.mer-dash-item:nth-child(n+6) { animation-delay: 0.25s; }
+
+.mer-dash-item-title {
+  font-size: 13px;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.mer-dash-item-sub {
+  font-size: 11px;
+  color: var(--text-faint);
+}
+
+.mer-dash-item-right {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.mer-dash-item-amount {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 3px;
+}
+
+.mer-dash-item-status {
+  font-size: 9.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.mer-dash-empty {
+  padding: 18px;
+  font-size: 12.5px;
+}
+
+.mer-dash-footer-link {
+  display: block;
+  text-align: center;
+  padding: 14px;
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  border-top: 1px solid var(--border);
+  margin-top: auto;
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.mer-dash-footer-link:hover {
+  color: var(--text);
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+@media (max-width: 860px) {
+  .mer-dash-main {
+    grid-template-columns: 1fr;
+  }
+
+  .mer-dash-stats {
+    gap: 24px;
+  }
+}
+
+/* Submit (form panel + history panel, sharing the dashboard's panel language) */
+.mer-submit-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+.mer-submit-panel {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  padding: 24px;
+  animation: mer-enter-fade-up 0.5s ease-out both;
+}
+
+.mer-submit-panel + .mer-submit-panel {
+  animation-delay: 0.1s;
+}
+
+.mer-submit-panel-title {
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: 18px;
+}
+
+.mer-submit-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.mer-submit-field-full {
+  grid-column: 1 / -1;
+}
+
+.mer-submit-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 4px;
+}
+
+@media (max-width: 640px) {
+  .mer-submit-form {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Login (split card: brand art panel + form panel) */
+.mer-login-page {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  padding: 40px 24px;
+  overflow: hidden;
+}
+
+.mer-login-network {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  animation: mer-enter-fade 1.8s ease-out both;
+}
+
+.mer-network-route {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  opacity: 0.4;
+  stroke-dasharray: 7 11;
+  animation-name: mer-route-flow;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+@keyframes mer-route-flow {
+  to {
+    stroke-dashoffset: -180;
+  }
+}
+
+.mer-network-node-dot {
+  fill: var(--accent);
+  opacity: 0.85;
+}
+
+.mer-network-node-ring {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1;
+  opacity: 0.55;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: mer-node-pulse 3.4s ease-out infinite;
+}
+
+@keyframes mer-node-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  100% {
+    transform: scale(5.5);
+    opacity: 0;
+  }
+}
+
+.mer-network-packet {
+  fill: #ff6a5a;
+  filter: drop-shadow(0 0 5px rgba(255, 59, 59, 0.95));
+}
+
+@keyframes mer-enter-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes mer-enter-fade-up {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes mer-enter-fade-left {
+  from { opacity: 0; transform: translateX(-18px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes mer-enter-card {
+  from { opacity: 0; transform: translateY(28px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mer-network-route,
+  .mer-network-node-ring {
+    animation: none;
+  }
+}
+
+.mer-login-card {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  width: 100%;
+  max-width: 1040px;
+  min-height: 620px;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.55);
+  animation: mer-enter-card 0.75s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
+}
+
+.mer-login-visual {
+  position: relative;
+  width: 46%;
+  flex-shrink: 0;
+  overflow: hidden;
+  background: var(--bg);
+  animation: mer-enter-fade-left 0.7s ease-out 0.35s both;
+}
+
+.mer-login-visual-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.mer-login-visual-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(4, 7, 13, 0) 38%, rgba(4, 7, 13, 0.55) 72%, rgba(4, 7, 13, 0.88) 100%);
+}
+
+.mer-login-visual-brand {
+  position: absolute;
+  z-index: 2;
+  top: 28px;
+  left: 32px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--text);
+  animation: mer-enter-fade 0.6s ease-out 0.55s both;
+}
+
+.mer-login-visual-copy {
+  position: absolute;
+  z-index: 2;
+  left: 32px;
+  right: 32px;
+  bottom: 32px;
+  animation: mer-enter-fade-up 0.6s ease-out 0.6s both;
+}
+
+.mer-login-visual-heading {
+  font-size: 21px;
+  line-height: 1.32;
+  color: var(--text);
+  margin-bottom: 10px;
+  letter-spacing: 0.01em;
+}
+
+.mer-login-visual-subtext {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--text-muted);
+  margin: 0 0 16px;
+  max-width: 360px;
+}
+
+.mer-login-visual-tagline {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--text-faint);
+  margin: 0;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.mer-login-form-panel {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 56px;
+}
+
+.mer-login-form-inner {
+  width: 100%;
+  max-width: 360px;
+}
+
+.mer-login-heading {
+  font-size: 22px;
+  margin-bottom: 8px;
+  animation: mer-enter-fade-up 0.55s ease-out 0.5s both;
+}
+
+.mer-login-subtext {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--text-muted);
+  margin: 0 0 28px;
+  animation: mer-enter-fade-up 0.55s ease-out 0.58s both;
+}
+
+.mer-login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+  animation: mer-enter-fade-up 0.55s ease-out 0.66s both;
+}
+
+.mer-login-row {
+  display: flex;
+  gap: 12px;
+}
+
+.mer-field {
+  flex: 1;
+  min-width: 0;
+}
+
+.mer-required {
+  color: var(--accent);
+}
+
+.mer-field-wrap {
+  position: relative;
+}
+
+.mer-field-wrap input {
+  padding-right: 38px;
+}
+
+.mer-field-toggle {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  padding: 2px;
+  margin: 0;
+  color: var(--text-faint);
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.mer-field-toggle:hover {
+  color: var(--text-muted);
+}
+
+.mer-login-help {
+  font-size: 10.5px;
+  color: var(--text-faint);
+  margin: -2px 0 0;
+  line-height: 1.4;
+}
+
+.mer-login-submit {
+  width: 100%;
+  margin-top: 4px;
+}
+
+.mer-login-switch {
+  margin-top: 22px;
+  text-align: center;
+  font-size: 11.5px;
+  color: var(--text-faint);
+  animation: mer-enter-fade-up 0.5s ease-out 0.78s both;
+}
+
+.mer-login-footer {
+  margin-top: 26px;
+  text-align: center;
+  font-size: 9.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  animation: mer-enter-fade 0.5s ease-out 0.86s both;
+}
+
+@media (max-width: 760px) {
+  .mer-login-card {
+    flex-direction: column;
+    min-height: auto;
+  }
+
+  .mer-login-visual {
+    width: 100%;
+    height: 200px;
+  }
+
+  .mer-login-visual-brand {
+    top: 18px;
+    left: 22px;
+    font-size: 12px;
+  }
+
+  .mer-login-visual-copy {
+    left: 22px;
+    right: 22px;
+    bottom: 18px;
+  }
+
+  .mer-login-visual-heading {
+    font-size: 16px;
+    line-height: 1.3;
+    margin-bottom: 0;
+  }
+
+  .mer-login-visual-subtext,
+  .mer-login-visual-tagline {
+    display: none;
+  }
+
+  .mer-login-form-panel {
+    padding: 36px 26px;
+  }
+}
+
+/* Home hero (public landing, shown before login) */
+.mer-home {
   position: relative;
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  background: var(--bg);
 }
 
-.mer-login-sphere {
+.mer-home-bg {
   position: absolute;
-  top: -20vh;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 640px;
-  height: 640px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 38% 32%, #4a4030 0%, #231f18 45%, transparent 75%);
+  inset: 0;
+  width: 100%;
+  height: 100%;
   z-index: 0;
+  animation: mer-enter-fade 1.5s ease-out both;
 }
 
-.mer-login-content {
+.mer-home-star {
+  animation: mer-star-twinkle 4s ease-in-out infinite;
+}
+
+@keyframes mer-star-twinkle {
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 0.95; }
+}
+
+.mer-home-ridge-glow {
+  animation: mer-glow-pulse-soft 6s ease-in-out infinite;
+}
+
+.mer-home-ridge-line {
+  animation: mer-glow-pulse-crisp 6s ease-in-out infinite;
+}
+
+@keyframes mer-glow-pulse-soft {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 0.9; }
+}
+
+@keyframes mer-glow-pulse-crisp {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+
+.mer-home-route {
+  animation: mer-route-flow 3s linear infinite;
+}
+
+.mer-home-node-ring {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: mer-node-pulse 3.4s ease-out infinite;
+}
+
+.mer-home-brand {
+  position: absolute;
+  z-index: 2;
+  top: 28px;
+  left: 44px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--text);
+  animation: mer-enter-fade 0.6s ease-out 0.4s both;
+}
+
+.mer-home-panel {
   position: relative;
   z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 40px;
+  padding: 40px 36px;
   width: 100%;
   max-width: 360px;
+  background: rgba(8, 13, 22, 0.6);
+  border: 1px solid rgba(255, 59, 59, 0.35);
+  border-radius: var(--radius);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 0 60px rgba(255, 59, 59, 0.08), 0 20px 60px rgba(0, 0, 0, 0.5);
+  animation: mer-enter-card 0.75s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
 }
 
-.mer-login-eyebrow {
-  font-size: 11px;
-  letter-spacing: 0.12em;
+.mer-home-eyebrow {
+  font-size: 10.5px;
+  letter-spacing: 0.28em;
   text-transform: uppercase;
-  color: var(--text-muted);
-  margin-bottom: 12px;
+  color: var(--accent);
+  font-weight: 600;
+  margin-bottom: 14px;
+  animation: mer-enter-fade-up 0.5s ease-out 0.45s both;
 }
 
-.mer-login-wordmark {
-  font-size: clamp(40px, 8vw, 72px);
+.mer-home-wordmark {
+  font-size: clamp(30px, 5vw, 40px);
   letter-spacing: 0.02em;
-  margin-bottom: 40px;
-  text-shadow: 0 4px 40px rgba(0, 0, 0, 0.6);
+  margin-bottom: 14px;
+  animation: mer-enter-fade-up 0.55s ease-out 0.53s both;
 }
 
-.mer-login-form {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  width: 100%;
+.mer-home-tagline {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 0 0 22px;
+  max-width: 320px;
+  animation: mer-enter-fade-up 0.55s ease-out 0.61s both;
 }
 
-.mer-login-footer {
-  margin-top: 32px;
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--text-faint);
+.mer-home-cta {
+  text-decoration: none;
+  display: inline-block;
+  animation: mer-enter-fade-up 0.5s ease-out 0.7s both;
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+  .mer-login-network,
+  .mer-login-card,
+  .mer-login-visual,
+  .mer-login-visual-brand,
+  .mer-login-visual-copy,
+  .mer-login-heading,
+  .mer-login-subtext,
+  .mer-login-form,
+  .mer-login-switch,
+  .mer-login-footer,
+  .mer-home-bg,
+  .mer-home-brand,
+  .mer-home-panel,
+  .mer-home-eyebrow,
+  .mer-home-wordmark,
+  .mer-home-tagline,
+  .mer-home-cta,
+  .mer-dash-stats,
+  .mer-dash-panel,
+  .mer-page-header,
+  .mer-page-back,
+  .mer-page-panel-enter,
+  .mer-submit-panel,
+  .mer-nav,
+  .mer-dash-item,
+  .mer-table tbody tr {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .mer-home-star,
+  .mer-home-ridge-glow,
+  .mer-home-ridge-line,
+  .mer-home-route,
+  .mer-home-node-ring,
+  .mer-dash-route,
+  .mer-dash-node-ring,
+  .mer-nav-status-dot,
+  .mer-status-pill.mer-status-pending::before {
+    animation: none;
+  }
 }

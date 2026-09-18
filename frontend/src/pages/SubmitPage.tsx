@@ -2,6 +2,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "../supabaseClient";
 import { useAuth } from "../auth-context";
+import { Nav } from "../components/Nav";
 import type { Expense, ExpenseCategory } from "../types";
 
 const CATEGORIES: { value: ExpenseCategory; label: string }[] = [
@@ -11,6 +12,10 @@ const CATEGORIES: { value: ExpenseCategory; label: string }[] = [
   { value: "maintenance", label: "Maintenance" },
   { value: "other", label: "Other" },
 ];
+
+function statusClass(status: Expense["status"]) {
+  return `mer-status-${status}`;
+}
 
 export default function SubmitPage() {
   const { user } = useAuth();
@@ -105,103 +110,142 @@ export default function SubmitPage() {
   }
 
   return (
-    <div style={{ maxWidth: 640, margin: "60px auto", fontFamily: "system-ui" }}>
-      <p>
-        <Link to="/">&larr; Dashboard</Link>
-      </p>
-      <h1>Submit an expense</h1>
-      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 40 }}>
-        <label>
-          Category
-          <select value={category} onChange={(e) => setCategory(e.target.value as ExpenseCategory)}>
-            {CATEGORIES.map((c) => (
-              <option key={c.value} value={c.value}>
-                {c.label}
-              </option>
-            ))}
-          </select>
-        </label>
-        <input
-          type="text"
-          placeholder="Description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          required
-        />
-        <input
-          type="number"
-          step="0.01"
-          min="0.01"
-          placeholder="Amount (EUR)"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
-          required
-        />
-        <input
-          type="text"
-          placeholder="Port / destination (optional)"
-          value={port}
-          onChange={(e) => setPort(e.target.value)}
-        />
-        <label>
-          Date needed (optional)
-          <input type="date" value={dateNeeded} onChange={(e) => setDateNeeded(e.target.value)} />
-        </label>
-        <label>
-          Receipt (optional)
-          <input
-            type="file"
-            accept="application/pdf,image/*"
-            onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-          />
-        </label>
-        {error && <p style={{ color: "crimson" }}>{error}</p>}
-        <button type="submit" disabled={submitting}>
-          {submitting ? "Submitting..." : "Submit"}
-        </button>
-      </form>
+    <div>
+      <Nav />
+      <div className="mer-page">
+        <Link to="/dashboard" className="mer-page-back mer-muted">
+          &larr; Dashboard
+        </Link>
+        <div className="mer-page-header">
+          <h1 className="mer-page-title">Submit an expense</h1>
+        </div>
 
-      <h2>Your expenses</h2>
-      {loadingList ? (
-        <p>Loading...</p>
-      ) : expenses.length === 0 ? (
-        <p>No expenses yet.</p>
-      ) : (
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
-          <thead>
-            <tr style={{ textAlign: "left", borderBottom: "1px solid #ccc" }}>
-              <th>Description</th>
-              <th>Category</th>
-              <th>Port</th>
-              <th>Needed</th>
-              <th>Amount</th>
-              <th>Status</th>
-              <th>Receipt</th>
-            </tr>
-          </thead>
-          <tbody>
-            {expenses.map((expense) => (
-              <tr key={expense.id} style={{ borderBottom: "1px solid #eee" }}>
-                <td>{expense.description}</td>
-                <td>{expense.category}</td>
-                <td>{expense.port ?? "-"}</td>
-                <td>{expense.date_needed ?? "-"}</td>
-                <td>&euro;{(expense.amount_cents / 100).toFixed(2)}</td>
-                <td>{expense.status}</td>
-                <td>
-                  {expense.receipt_path ? (
-                    <button type="button" onClick={() => viewReceipt(expense.receipt_path!)}>
-                      View
-                    </button>
-                  ) : (
-                    "-"
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+        <div className="mer-submit-grid">
+          <div className="mer-submit-panel">
+            <div className="mer-submit-panel-title">New Request</div>
+            <form onSubmit={handleSubmit} className="mer-submit-form">
+              <div>
+                <label>Category</label>
+                <select value={category} onChange={(e) => setCategory(e.target.value as ExpenseCategory)}>
+                  {CATEGORIES.map((c) => (
+                    <option key={c.value} value={c.value}>
+                      {c.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label>
+                  Amount (EUR) <span className="mer-required">*</span>
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  min="0.01"
+                  placeholder="0.00"
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div className="mer-submit-field-full">
+                <label>
+                  Description <span className="mer-required">*</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. Provisioning run for guest arrival"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div>
+                <label>Port / destination (optional)</label>
+                <input
+                  type="text"
+                  placeholder="e.g. Palma de Mallorca"
+                  value={port}
+                  onChange={(e) => setPort(e.target.value)}
+                />
+              </div>
+              <div>
+                <label>Date needed (optional)</label>
+                <input type="date" value={dateNeeded} onChange={(e) => setDateNeeded(e.target.value)} />
+              </div>
+
+              <div className="mer-submit-field-full">
+                <label>Receipt (optional)</label>
+                <input
+                  type="file"
+                  accept="application/pdf,image/*"
+                  onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+                />
+              </div>
+
+              {error && <p className="mer-error mer-submit-field-full">{error}</p>}
+
+              <div className="mer-submit-actions">
+                <button type="submit" className="mer-btn-primary" disabled={submitting}>
+                  {submitting ? "Submitting..." : "Submit request"}
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <div className="mer-submit-panel">
+            <div className="mer-submit-panel-title">Your Expenses</div>
+            {loadingList ? (
+              <p className="mer-muted">Loading&hellip;</p>
+            ) : expenses.length === 0 ? (
+              <p className="mer-muted">No expenses yet.</p>
+            ) : (
+              <table className="mer-table">
+                <thead>
+                  <tr>
+                    <th>Description</th>
+                    <th>Category</th>
+                    <th>Port</th>
+                    <th>Needed</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Receipt</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {expenses.map((expense) => (
+                    <tr key={expense.id}>
+                      <td>{expense.description}</td>
+                      <td>{expense.category}</td>
+                      <td>{expense.port ?? "-"}</td>
+                      <td>{expense.date_needed ?? "-"}</td>
+                      <td>&euro;{(expense.amount_cents / 100).toFixed(2)}</td>
+                      <td>
+                        <span className={`mer-status-pill ${statusClass(expense.status)}`}>{expense.status}</span>
+                      </td>
+                      <td>
+                        {expense.receipt_path ? (
+                          <button
+                            type="button"
+                            className="mer-link-btn"
+                            onClick={() => viewReceipt(expense.receipt_path!)}
+                          >
+                            View
+                          </button>
+                        ) : (
+                          "-"
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

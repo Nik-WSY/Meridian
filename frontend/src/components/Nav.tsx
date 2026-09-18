@@ -16,7 +16,7 @@ export function Nav() {
   const location = useLocation();
 
   const links = [
-    { to: "/", label: "Dashboard" },
+    { to: "/dashboard", label: "Dashboard" },
     { to: "/submit", label: "Submit" },
     ...(profile?.role === "manager" ? [{ to: "/queue", label: "Requests" }] : []),
   ];
@@ -24,7 +24,7 @@ export function Nav() {
   return (
     <nav className="mer-nav">
       <div className="mer-nav-left">
-        <Link to="/" className="mer-brand">
+        <Link to="/dashboard" className="mer-brand">
           <svg width="20" height="20" viewBox="0 0 22 22" fill="none">
             <circle cx="11" cy="11" r="9.5" stroke="currentColor" strokeWidth="1.2" />
             <ellipse cx="11" cy="11" rx="4" ry="9.5" stroke="currentColor" strokeWidth="1" />
@@ -45,6 +45,10 @@ export function Nav() {
         </div>
       </div>
       <div className="mer-nav-right">
+        <span className="mer-nav-status">
+          <span className="mer-nav-status-dot" />
+          Live
+        </span>
         <span>{profile?.full_name || user?.email}</span>
         <div className="mer-avatar">{initials(profile?.full_name ?? null, user?.email)}</div>
         <button type="button" className="mer-link-btn" onClick={signOut}>
